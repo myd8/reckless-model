@@ -1,0 +1,75 @@
+Superpowers Plugin (skills)
+
+  ┌────────────────────────────────┬────────────────────────────────────────────────────────────────────┐
+  │             Skill              │                            Description                             │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ using-superpowers              │ Introduction to finding and using skills (loaded at session start) │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ brainstorming                  │ Structured brainstorming before planning/implementation            │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ writing-plans                  │ Writing implementation plans                                       │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ executing-plans                │ Executing approved plans step-by-step                              │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ dispatching-parallel-agents    │ Running multiple agents in parallel for complex tasks              │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ test-driven-development        │ TDD workflow (red-green-refactor)                                  │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ systematic-debugging           │ Structured debugging with root cause analysis                      │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ subagent-driven-development    │ Driving development through specialized subagents                  │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ requesting-code-review         │ Requesting code review from a reviewer agent                       │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ receiving-code-review          │ Processing and acting on code review feedback                      │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ finishing-a-development-branch │ Wrapping up a branch (cleanup, final checks)                       │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ using-git-worktrees            │ Working with git worktrees for parallel development                │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ verification-before-completion │ Verifying work is complete before finishing                        │
+  ├────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ writing-skills                 │ Creating new skills                                                │
+  └────────────────────────────────┴────────────────────────────────────────────────────────────────────┘
+
+  Superpowers Plugin (slash commands)
+
+  ┌───────────────┬──────────────────────────────────┐
+  │    Command    │           Description            │
+  ├───────────────┼──────────────────────────────────┤
+  │ /brainstorm   │ Kick off a brainstorming session │
+  ├───────────────┼──────────────────────────────────┤
+  │ /write-plan   │ Write an implementation plan     │
+  ├───────────────┼──────────────────────────────────┤
+  │ /execute-plan │ Execute an existing plan         │
+  └───────────────┴──────────────────────────────────┘
+
+  Feature Dev Plugin
+
+  ┌─────────┬────────────────┬─────────────────────────────────────────────────────┐
+  │  Type   │      Name      │                     Description                     │
+  ├─────────┼────────────────┼─────────────────────────────────────────────────────┤
+  │ Command │ /feature-dev   │ Feature development workflow                        │
+  ├─────────┼────────────────┼─────────────────────────────────────────────────────┤
+  │ Agent   │ code-explorer  │ Deep codebase analysis and exploration              │
+  ├─────────┼────────────────┼─────────────────────────────────────────────────────┤
+  │ Agent   │ code-reviewer  │ Code review for bugs, quality, and conventions      │
+  ├─────────┼────────────────┼─────────────────────────────────────────────────────┤
+  │ Agent   │ code-architect │ Design feature architectures from existing patterns │
+  └─────────┴────────────────┴─────────────────────────────────────────────────────┘
+
+  Frontend Design Plugin
+
+  ┌───────┬─────────────────┐
+  │ Type  │      Name       │
+  ├───────┼─────────────────┤
+  │ Skill │ frontend-design │
+  └───────┴─────────────────┘
+
+  Code Simplifier Plugin
+
+  ┌───────┬─────────────────┬─────────────────────────────────────────────────────────────┐
+  │ Type  │      Name       │                         Description                         │
+  ├───────┼─────────────────┼─────────────────────────────────────────────────────────────┤
+  │ Agent │ code-simplifier │ Simplifies and refines code for clarity and maintainability │
+  └───────┴─────────────────┴─────────────────────────────────────────────────────────────┘

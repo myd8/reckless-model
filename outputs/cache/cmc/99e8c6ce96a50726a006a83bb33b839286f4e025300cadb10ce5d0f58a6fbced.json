@@ -1,0 +1,1 @@
+{"plan": {"credit_limit_monthly": 10000, "credit_limit_monthly_reset": "In 23 days, 23 hours, 20 minutes", "credit_limit_monthly_reset_timestamp": "2026-04-01T00:00:00.000Z", "rate_limit_minute": 30}, "usage": {"current_minute": {"requests_made": 1, "requests_left": 29}, "current_day": {"credits_used": 0}, "current_month": {"credits_used": 0, "credits_left": 10000}}}
