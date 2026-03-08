@@ -13,14 +13,21 @@ from reckless_binance.binance_client import (
     parse_active_usdt_perpetuals,
 )
 from reckless_binance.events import attach_forward_returns, build_top20_entry_events
+from reckless_binance.filter_analysis import evaluate_candidate_filters
 from reckless_binance.paths import output_dir
 from reckless_binance.reporting import (
     bucket_forward_paths,
     compare_reversal_groups,
+    render_forward_return_chart,
     summarize_forward_returns,
-    write_svg_placeholder,
 )
+from reckless_binance.signals import build_signal_table, summarize_signal_candidates
 from reckless_binance.universe import with_days_since_listing
+from reckless_binance.walk_forward import (
+    evaluate_monthly_walk_forward,
+    evaluate_secondary_conditions_walk_forward,
+    evaluate_tertiary_conditions_walk_forward,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -38,6 +45,20 @@ def _timestamp_to_date(value: int) -> pd.Timestamp:
 
 def _date_to_ms(value: pd.Timestamp) -> int:
     return int(value.tz_localize("UTC").timestamp() * 1000)
+
+
+def _jsonable_record(record: dict[str, object] | None) -> dict[str, object] | None:
+    if record is None:
+        return None
+    clean: dict[str, object] = {}
+    for key, value in record.items():
+        if pd.isna(value):
+            clean[key] = None
+        elif hasattr(value, "item"):
+            clean[key] = value.item()
+        else:
+            clean[key] = value
+    return clean
 
 
 def _klines_to_frame(symbol: str, rows: list[list[object]]) -> pd.DataFrame:
@@ -172,13 +193,45 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Path]:
     feature_summary = compare_reversal_groups(events, feature_columns=feature_columns)
     feature_summary.to_csv(out_dir / "feature_comparison.csv", index=False)
 
-    write_svg_placeholder(out_dir / "forward_return_buckets.svg")
+    filter_results = evaluate_candidate_filters(events)
+    filter_results.to_csv(out_dir / "filter_oos_results.csv", index=False)
+
+    walk_forward_results, walk_forward_top, walk_forward_summary = evaluate_monthly_walk_forward(events)
+    walk_forward_results.to_csv(out_dir / "walk_forward_results.csv", index=False)
+    walk_forward_top.to_csv(out_dir / "walk_forward_top_filters.csv", index=False)
+    walk_forward_summary.to_csv(out_dir / "walk_forward_summary.csv", index=False)
+
+    secondary_results, secondary_summary = evaluate_secondary_conditions_walk_forward(
+        events,
+        base_filter_name="trade_count_top_half",
+    )
+    secondary_results.to_csv(out_dir / "secondary_filter_walk_forward_results.csv", index=False)
+    secondary_summary.to_csv(out_dir / "secondary_filter_walk_forward_summary.csv", index=False)
+
+    tertiary_results, tertiary_summary = evaluate_tertiary_conditions_walk_forward(
+        events,
+        base_filter_names=["trade_count_top_half", "quote_vol_top_half"],
+    )
+    tertiary_results.to_csv(out_dir / "tertiary_filter_walk_forward_results.csv", index=False)
+    tertiary_summary.to_csv(out_dir / "tertiary_filter_walk_forward_summary.csv", index=False)
+
+    signal_table, signal_candidates = build_signal_table(events)
+    signal_table.to_csv(out_dir / "signal_table.csv", index=False)
+    signal_candidates.to_csv(out_dir / "signal_candidates.csv", index=False)
+    signal_candidate_summary = summarize_signal_candidates(signal_candidates)
+
+    render_forward_return_chart(bucket_paths, out_dir / "forward_return_buckets.svg")
 
     summary = {
         "event_count": int(events.shape[0]),
         "symbol_count": int(prices["symbol"].nunique()) if not prices.empty else 0,
         "date_min": prices["date"].min().isoformat() if not prices.empty else None,
         "date_max": prices["date"].max().isoformat() if not prices.empty else None,
+        "top_filter": _jsonable_record(filter_results.iloc[0].to_dict()) if not filter_results.empty else None,
+        "top_walk_forward_filter": _jsonable_record(walk_forward_summary.iloc[0].to_dict()) if not walk_forward_summary.empty else None,
+        "top_secondary_filter_on_trade_count": _jsonable_record(secondary_summary.iloc[0].to_dict()) if not secondary_summary.empty else None,
+        "top_tertiary_filter_on_trade_count_quote_vol": _jsonable_record(tertiary_summary.iloc[0].to_dict()) if not tertiary_summary.empty else None,
+        "signal_candidate_summary": signal_candidate_summary,
     }
     summary_path = out_dir / "summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
@@ -188,6 +241,16 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Path]:
         "forward": out_dir / "forward_returns_by_day.csv",
         "buckets": out_dir / "bucket_paths.csv",
         "features": out_dir / "feature_comparison.csv",
+        "filters": out_dir / "filter_oos_results.csv",
+        "walk_forward_results": out_dir / "walk_forward_results.csv",
+        "walk_forward_top_filters": out_dir / "walk_forward_top_filters.csv",
+        "walk_forward_summary": out_dir / "walk_forward_summary.csv",
+        "secondary_walk_forward_results": out_dir / "secondary_filter_walk_forward_results.csv",
+        "secondary_walk_forward_summary": out_dir / "secondary_filter_walk_forward_summary.csv",
+        "tertiary_walk_forward_results": out_dir / "tertiary_filter_walk_forward_results.csv",
+        "tertiary_walk_forward_summary": out_dir / "tertiary_filter_walk_forward_summary.csv",
+        "signal_table": out_dir / "signal_table.csv",
+        "signal_candidates": out_dir / "signal_candidates.csv",
         "chart": out_dir / "forward_return_buckets.svg",
         "summary": summary_path,
     }

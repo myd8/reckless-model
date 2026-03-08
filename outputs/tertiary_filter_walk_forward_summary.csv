@@ -1,0 +1,4 @@
+tertiary_filter_name,selected_count,avg_test_reversal_rate,median_test_forward_14d_median,avg_test_forward_14d_mean,total_test_count
+ret_7d_top_half,13,0.7214478053882852,-0.17230331078675687,-0.022919910582646565,988
+younger_than_median,5,0.6109226535456044,-0.05126524745256811,-0.019521821194184236,321
+repeat_entry,3,0.7151462279827184,-0.0853406600248035,-0.09819661850394952,207

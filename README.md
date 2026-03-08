@@ -33,5 +33,15 @@ PYTHONPATH=src python3 -m reckless_binance.cli --lookback-years 3 --top-n 20
 - `outputs/forward_returns_by_day.csv`
 - `outputs/bucket_paths.csv`
 - `outputs/feature_comparison.csv`
+- `outputs/filter_oos_results.csv`
+- `outputs/walk_forward_results.csv`
+- `outputs/walk_forward_top_filters.csv`
+- `outputs/walk_forward_summary.csv`
+- `outputs/secondary_filter_walk_forward_results.csv`
+- `outputs/secondary_filter_walk_forward_summary.csv`
+- `outputs/tertiary_filter_walk_forward_results.csv`
+- `outputs/tertiary_filter_walk_forward_summary.csv`
+- `outputs/signal_table.csv`
+- `outputs/signal_candidates.csv`
 - `outputs/forward_return_buckets.svg`
 - `outputs/summary.json`

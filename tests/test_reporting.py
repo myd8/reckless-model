@@ -1,6 +1,10 @@
 import pandas as pd
 
-from reckless_binance.reporting import bucket_forward_paths, summarize_forward_returns
+from reckless_binance.reporting import (
+    bucket_forward_paths,
+    render_forward_return_chart,
+    summarize_forward_returns,
+)
 
 
 def test_reversal_probability_is_share_of_negative_forward_returns():
@@ -30,3 +34,26 @@ def test_bucket_forward_paths_produces_bucketed_daily_rows():
 
     assert set(bucketed["horizon_day"]) == {1, 2}
     assert bucketed["bucket"].nunique() == 4
+
+
+def test_render_forward_return_chart_writes_real_svg(tmp_path):
+    bucket_rows = pd.DataFrame(
+        [
+            {"bucket": "75th percentile & up", "horizon_day": 1, "mean_return": 0.04, "median_return": 0.03},
+            {"bucket": "75th percentile & up", "horizon_day": 2, "mean_return": 0.02, "median_return": 0.01},
+            {"bucket": "50th percentile - 75th percentile", "horizon_day": 1, "mean_return": 0.01, "median_return": 0.00},
+            {"bucket": "50th percentile - 75th percentile", "horizon_day": 2, "mean_return": -0.01, "median_return": -0.02},
+            {"bucket": "25th percentile - 50th percentile", "horizon_day": 1, "mean_return": -0.02, "median_return": -0.01},
+            {"bucket": "25th percentile - 50th percentile", "horizon_day": 2, "mean_return": -0.03, "median_return": -0.02},
+            {"bucket": "25th percentile and below", "horizon_day": 1, "mean_return": -0.04, "median_return": -0.03},
+            {"bucket": "25th percentile and below", "horizon_day": 2, "mean_return": -0.05, "median_return": -0.04},
+        ]
+    )
+    out_path = tmp_path / "chart.svg"
+
+    render_forward_return_chart(bucket_rows, out_path)
+
+    svg = out_path.read_text(encoding="utf-8")
+    assert "<svg" in svg
+    assert "<polyline" in svg
+    assert "75th percentile &amp; up" in svg
