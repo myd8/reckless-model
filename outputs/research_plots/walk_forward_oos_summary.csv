@@ -1,0 +1,6 @@
+Filter,Times Selected,Avg OOS Reversal,Median OOS 14d Ret,Avg OOS 14d Mean,Total OOS Events
+trade_count_top_half,13,71.2%,-11.33%,0.10%,1396
+quote_vol_top_half,8,67.9%,-10.73%,-5.56%,834
+ret_7d_top_half,1,65.7%,-12.25%,-2.28%,108
+repeat_entry,1,62.2%,-6.71%,-3.67%,98
+younger_than_median,1,43.2%,4.73%,9.55%,125
